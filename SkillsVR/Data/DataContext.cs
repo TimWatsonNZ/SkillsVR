@@ -6,6 +6,7 @@ namespace SkillsVR.Data
     public class DatabaseContext : DbContext
     {
         public DbSet<Player> Players { get; set; }
+        public DbSet<Team> Teams { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         { }
@@ -13,6 +14,14 @@ namespace SkillsVR.Data
     }
 
     public class Player
+    {
+        [Key]
+        public int Id { get; set; }
+        [MaxLength(100)]
+        public string Name { get; set; }
+    }
+
+    public class Team
     {
         [Key]
         public int Id { get; set; }

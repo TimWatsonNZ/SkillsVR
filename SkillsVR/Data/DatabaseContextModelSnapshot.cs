@@ -31,6 +31,22 @@ namespace SkillsVR.Data
 
                     b.ToTable("Players");
                 });
+
+            modelBuilder.Entity("SkillsVR.Data.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+                });
 #pragma warning restore 612, 618
         }
     }
