@@ -27,5 +27,17 @@ namespace SkillsVR.Controllers
             _context.SaveChanges();
             return team;
         }
+
+        [HttpPost]
+        public void AddPlayerToTeam(int playerId, int teamId)
+        {
+
+        }
+
+        [HttpGet]
+        public void GetPlayers()
+        {
+
+        }
     }
 }

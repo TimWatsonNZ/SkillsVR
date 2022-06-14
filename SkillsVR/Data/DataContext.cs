@@ -5,8 +5,8 @@ namespace SkillsVR.Data
 {
     public class DatabaseContext : DbContext
     {
-        public DbSet<Player> Players { get; set; }
-        public DbSet<Team> Teams { get; set; }
+        public DbSet<Player> Players => Set<Player>();
+        public DbSet<Team> Teams => Set<Team>();
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         { }
