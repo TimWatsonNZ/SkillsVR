@@ -19,6 +19,11 @@ namespace SkillsVR.Data
         public int Id { get; set; }
         [MaxLength(100)]
         public string Name { get; set; }
+        public DateTime Birthdate { get; set; }
+        public int Height { get; set; }
+        public int Weight { get; set; }
+        public string PlaceOfBirth { get; set; }
+        public Team Team { get; set; }
     }
 
     public class Team
@@ -26,6 +31,11 @@ namespace SkillsVR.Data
         [Key]
         public int Id { get; set; }
         [MaxLength(100)]
+        
         public string Name { get; set; }
+        public string Ground { get; set; }
+        public string Coach { get; set; }
+        public DateTime FoundedYear { get; set; }
+        public string Region { get; set; }
     }
 }
