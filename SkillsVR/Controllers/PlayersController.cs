@@ -19,9 +19,10 @@ namespace SkillsVR.Controllers
         public IEnumerable<Player> Get([FromQuery] int? age)
         {
             var players = _context.Players;
+            
             if (age.HasValue)
             {
-                return players.Where(player => player.Birthdate.Year == DateTime.Now.Year - age);
+                return players.Where(player => player.Birthdate.Year == (DateTime.Now.Year - age));
             }
             return players;
         }
@@ -30,6 +31,7 @@ namespace SkillsVR.Controllers
         public Player CreatePlayer(Player player)
         {
             _context.Players.Add(player);
+            _context.SaveChanges();
             return player;
         }
 
