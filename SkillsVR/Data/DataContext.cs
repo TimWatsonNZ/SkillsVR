@@ -7,6 +7,7 @@ namespace SkillsVR.Data
     {
         public DbSet<Player> Players => Set<Player>();
         public DbSet<Team> Teams => Set<Team>();
+        public DbSet<PlayerContract> PlayerContracts => Set<PlayerContract>();
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         { }
@@ -37,5 +38,22 @@ namespace SkillsVR.Data
         public string Coach { get; set; }
         public DateTime FoundedYear { get; set; }
         public string Region { get; set; }
+    }
+
+    public class PlayerContract
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public Player Player { get; set; }
+        public Team Team { get; set; }
+        public PlayerTeamState State { get; set; }
+        public DateTime CreatedDate { get; set; }
+    }
+
+    public enum PlayerTeamState
+    {
+        Signed,
+        Unsigned,
     }
 }

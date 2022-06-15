@@ -6,10 +6,10 @@ namespace SkillsVR.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TeamController : ControllerBase
+    public class TeamsController : ControllerBase
     {
         private DatabaseContext _context;
-        public TeamController(DatabaseContext context)
+        public TeamsController(DatabaseContext context)
         {
             _context = context;
         }
@@ -21,23 +21,20 @@ namespace SkillsVR.Controllers
         }
 
         [HttpPost]
-        public Team AddTeams(Team team)
+        public Team CreateTeam(Team team)
         {
+            //  Need to check for dupes.
             _context.Teams.Add(team);
             _context.SaveChanges();
             return team;
         }
 
-        [HttpPost]
-        public void AddPlayerToTeam(int playerId, int teamId)
+        [HttpGet("{teamId}/players")]
+        public ActionResult<IEnumerable<Player>> GetPlayers(int teamId)
         {
+            var players = _context.Players.Where(player => player.Team.Id == teamId);
 
-        }
-
-        [HttpGet]
-        public void GetPlayers()
-        {
-
+            return Ok(players);
         }
     }
 }
