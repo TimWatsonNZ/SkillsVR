@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SkillsVR.Data
 {
@@ -7,8 +9,6 @@ namespace SkillsVR.Data
     {
         public DbSet<Player> Players => Set<Player>();
         public DbSet<Team> Teams => Set<Team>();
-        public DbSet<PlayerContract> PlayerContracts => Set<PlayerContract>();
-
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         { }
 
@@ -19,12 +19,20 @@ namespace SkillsVR.Data
         [Key]
         public int Id { get; set; }
         [MaxLength(100)]
-        public string Name { get; set; }
+        [Required]
+        public string Name { get; set; } = null!;
+        [Required]
         public DateTime Birthdate { get; set; }
+        [Required]
         public int Height { get; set; }
+        [Required]
         public int Weight { get; set; }
-        public string PlaceOfBirth { get; set; }
-        public Team Team { get; set; }
+        [Required]
+        public string PlaceOfBirth { get; set; } = null!;
+        public int? TeamId { get; set; }
+
+        [JsonIgnore]
+        public virtual Team? Team { get; set; }
     }
 
     public class Team
@@ -32,28 +40,14 @@ namespace SkillsVR.Data
         [Key]
         public int Id { get; set; }
         [MaxLength(100)]
-        
-        public string Name { get; set; }
-        public string Ground { get; set; }
-        public string Coach { get; set; }
+        public string Name { get; set; } = null!;
+        [MaxLength(100)]
+        public string Ground { get; set; } = null!;
+        [MaxLength(100)]
+        public string Coach { get; set; } = null!;
         public DateTime FoundedYear { get; set; }
-        public string Region { get; set; }
-    }
-
-    public class PlayerContract
-    {
-        [Key]
-        public int Id { get; set; }
-
-        public Player Player { get; set; }
-        public Team Team { get; set; }
-        public PlayerTeamState State { get; set; }
-        public DateTime CreatedDate { get; set; }
-    }
-
-    public enum PlayerTeamState
-    {
-        Signed,
-        Unsigned,
+        public string Region { get; set; } = null!;
+        [JsonIgnore]
+        public virtual ICollection<Player>? Players { get; set; }
     }
 }

@@ -37,7 +37,7 @@ namespace SkillsVR.Data
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     Weight = table.Column<int>(type: "INTEGER", nullable: false),
                     PlaceOfBirth = table.Column<string>(type: "TEXT", nullable: false),
-                    TeamId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TeamId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,8 +46,7 @@ namespace SkillsVR.Data
                         name: "FK_Players_Teams_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Teams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

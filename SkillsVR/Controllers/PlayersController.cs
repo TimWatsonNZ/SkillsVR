@@ -76,10 +76,14 @@ namespace SkillsVR.Controllers
 
             if (team == null)
             {
-                return NotFound();
+                return Ok(new List<Player>());
             }
 
-            var players = _context.Players.Where(player => player.Team.Id == team.Id);
+            var players = _context.Players.Where(player => 
+                player.TeamId.HasValue && 
+                player.Team != null &&
+                player.Team.Id == team.Id
+            );
 
             return Ok(players);
         }

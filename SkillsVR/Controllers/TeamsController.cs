@@ -23,7 +23,6 @@ namespace SkillsVR.Controllers
         [HttpPost]
         public Team CreateTeam(Team team)
         {
-            //  Need to check for dupes.
             _context.Teams.Add(team);
             _context.SaveChanges();
             return team;
@@ -32,9 +31,12 @@ namespace SkillsVR.Controllers
         [HttpGet("{teamId}/players")]
         public ActionResult<IEnumerable<Player>> GetPlayers(int teamId)
         {
-            var players = _context.Players.Where(player => player.Team.Id == teamId);
-
-            return Ok(players);
+            var team = _context.Teams.FirstOrDefault(team => team.Id == teamId);
+            if (team == null)
+            {
+                return NotFound($"No team with id: {teamId} found");
+            }
+            return Ok(team.Players);
         }
     }
 }

@@ -11,7 +11,7 @@ using SkillsVR.Data;
 namespace SkillsVR.Data
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220615232018_InitialCreate")]
+    [Migration("20220616042646_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,7 @@ namespace SkillsVR.Data
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TeamId")
+                    b.Property<int?>("TeamId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Weight")
@@ -114,10 +114,8 @@ namespace SkillsVR.Data
             modelBuilder.Entity("SkillsVR.Data.Player", b =>
                 {
                     b.HasOne("SkillsVR.Data.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Players")
+                        .HasForeignKey("TeamId");
 
                     b.Navigation("Team");
                 });
@@ -139,6 +137,11 @@ namespace SkillsVR.Data
                     b.Navigation("Player");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("SkillsVR.Data.Team", b =>
+                {
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }
