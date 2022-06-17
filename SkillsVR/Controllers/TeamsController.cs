@@ -22,6 +22,13 @@ namespace SkillsVR.Controllers
         [HttpPost]
         public ActionResult<Team> CreateTeam(Team team)
         {
+            var teamWithSameName = _context.Teams.FirstOrDefault(team => team.Name == team.Name);
+
+            if (teamWithSameName != null)
+            {
+                return BadRequest($"There is already a team called '{team.Name}'");
+            }
+
             _context.Teams.Add(team);
             _context.SaveChanges();
             return Ok(team);

@@ -8,6 +8,7 @@ dotnet ef migrations add InitialCreate -o './Data'
 dotnet ef database update
 
 I've added a test project that runs integration tests against an in-memory database.
+A swagger front-end is also setup to enable manual testing.
 
 Remarks:
 
