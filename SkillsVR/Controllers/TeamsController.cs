@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SkillsVR.Data;
 
 namespace SkillsVR.Controllers
@@ -15,17 +14,17 @@ namespace SkillsVR.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Team> GetTeams()
+        public ActionResult<IEnumerable<Team>> GetTeams()
         {
-            return _context.Teams.ToList();
+            return Ok(_context.Teams.ToList());
         }
 
         [HttpPost]
-        public Team CreateTeam(Team team)
+        public ActionResult<Team> CreateTeam(Team team)
         {
             _context.Teams.Add(team);
             _context.SaveChanges();
-            return team;
+            return Ok(team);
         }
 
         [HttpGet("{teamId}/players")]
@@ -36,7 +35,27 @@ namespace SkillsVR.Controllers
             {
                 return NotFound($"No team with id: {teamId} found");
             }
-            return Ok(team.Players);
+            var players = _context.Players.Where(player => player.TeamId == teamId);
+            return Ok(players);
+        }
+
+        [HttpPatch("{teamId}/players/{playerId}")]
+        public ActionResult<Player> AddPlayerToTeam(int playerId, int teamId)
+        {
+            var team = _context.Teams.FirstOrDefault(team => team.Id == teamId);
+            if (team == null)
+            {
+                return NotFound($"Team with id: {teamId} not found.");
+            }
+
+            var player = _context.Players.FirstOrDefault(player => player.Id == playerId);
+            if (player == null)
+            {
+                return NotFound($"Player with id: {playerId} not found.");
+            }
+            player.TeamId = teamId;
+            _context.SaveChanges();
+            return Ok(player);
         }
     }
 }

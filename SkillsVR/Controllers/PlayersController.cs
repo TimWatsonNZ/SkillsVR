@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SkillsVR.Data;
 
 namespace SkillsVR.Controllers
@@ -16,75 +15,68 @@ namespace SkillsVR.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Player> Get([FromQuery] int? age)
+        public ActionResult<IEnumerable<Player>> Get([FromQuery] int? age, [FromQuery] int? weight, [FromQuery] int? height)
         {
-            var players = _context.Players;
+            var query = _context.Players.AsQueryable();
             
             if (age.HasValue)
             {
-                return players.Where(player => player.Birthdate.Year == (DateTime.Now.Year - age));
+                query = query.Where(player => player.Birthdate.Year == (DateTime.Now.Year - age));
             }
-            return players;
+
+            if (weight.HasValue)
+            {
+                query = query.Where(player => player.Weight == weight);
+            }
+
+            if (height.HasValue)
+            {
+                query = query.Where(player => player.Height == height);
+            }
+
+
+            return Ok(query);
         }
 
         [HttpPost]
-        public Player CreatePlayer(Player player)
+        public ActionResult<Player> CreatePlayer(Player player)
         {
+            if (player.TeamId != null)
+            {
+                var team = _context.Teams.FirstOrDefault(team => team.Id == player.TeamId);
+                if (team == null)
+                {
+                    return NotFound($"No team with id {player.TeamId} found");
+                }
+            }
             _context.Players.Add(player);
             _context.SaveChanges();
-            return player;
+            return Ok(player);
         }
 
-        [HttpPatch("/{playerId}/team/{teamId}")]
-        public ActionResult AddPlayerToTeam(int playerId, int teamId)
-        {
-            var team = _context.Teams.FirstOrDefault(team => team.Id == teamId);
-            if (team == null)
-            {
-                return NotFound($"Team with id: {teamId} not found.");
-            }
-
-            var player = _context.Players.FirstOrDefault(player => player.Id == playerId);
-            if (player == null)
-            {
-                return NotFound($"Player with id: {playerId} not found.");
-            }
-
-            player.Team = team;
-            _context.SaveChanges();
-            return Ok();
-        }
-
-        [HttpGet("/{playerId}/team")]
+        [HttpGet("{playerId}/team")]
         public ActionResult<Team> GetPlayersTeam(int playerId)
         {
-            var playerTeam = _context.Players.FirstOrDefault(player => player.Id == playerId)?.Team;
+            var player = _context.Players.FirstOrDefault(player => player.Id == playerId);
 
-            if (playerTeam == null)
+            if (player== null)
             {
-                return NotFound();
+                return NotFound($"No player found with id ${playerId}");
             }
-
-            return Ok(playerTeam);
+            var team = _context.Teams.FirstOrDefault(team => team.Id == player.TeamId);
+            return Ok(team);
         }
 
         [HttpGet("coach/{coachName}")]
         public ActionResult<IEnumerable<Player>> GetByCoach(string coachName)
         {
-            //  Need a unique verify on coach -> team name. this makes it even better to have a coach table.
             var team = _context.Teams.Where(team => team.Coach == coachName).FirstOrDefault();
 
             if (team == null)
             {
                 return Ok(new List<Player>());
             }
-
-            var players = _context.Players.Where(player => 
-                player.TeamId.HasValue && 
-                player.Team != null &&
-                player.Team.Id == team.Id
-            );
-
+            var players = _context.Players.Where(player => player.TeamId == team.Id);
             return Ok(players);
         }
     }
