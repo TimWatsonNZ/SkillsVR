@@ -2,16 +2,18 @@
 
 Backend service in dot net core for SkillsVR
 
+To run you will need to first run a database migration. Run the below lines in the CLI from the project folder:
+
 dotnet ef migrations add InitialCreate -o './Data'
 dotnet ef database update
 
+I've added a test project that runs integration tests against an in-memory database.
+
 Remarks:
 
-Decided on int for weight and height instead of float and to model each as grams and centimetres.
-Floats are probably fine for these fields, the real danger with floats is when you are doing operations on them.
-Place of birth I decided on string for simplicity, in a real app you might want to have an object with
-city, country etc.
-Player-Team connection, in a real app I would separate this into another table, this then lets you have a history of 
-players-teams. Having a foreign key on the table itself erases this history any time a player changes team. Having a 
-separate table also lets you model states such as, player just signed on, player injured.
+I modelled height and weight as integers instead of floats because I think it's cleaner. 
+Established year could also be an int but I thought it made sense to extend it to a date to model the date of establishment.
+I thought about creating other tables - for grounds and coach but in the interest of time didn't pursue this.
+Likewise the relationship of player to team, in a real app I would create a linking table as otherwise the history
+of a player's teams gets erased.
 
